@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -30,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -56,6 +58,8 @@ class MainActivity : ComponentActivity() {
 fun AppScreen(modifier: Modifier = Modifier) {
     var sum by remember { mutableStateOf("") }
     var foods by remember { mutableStateOf("") }
+    var tea by remember { mutableStateOf(0f) }
+    
     Column(
         Modifier.padding(top = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally) {
@@ -116,6 +120,20 @@ fun AppScreen(modifier: Modifier = Modifier) {
                     focusedTextColor = Color.Black,
                 )
             )
+        }
+
+        Text(text = "Чаевые")
+        Slider(
+            value = tea,
+            onValueChange = { tea = it },
+            steps = 25,
+            valueRange = 0f .. 25f,
+            modifier = Modifier.padding(horizontal = 22.dp)
+        )
+        Row(horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.width(360.dp).padding(vertical = 10.dp)){
+            Text(text = "0")
+            Text(text = "25")
         }
     }
 }
