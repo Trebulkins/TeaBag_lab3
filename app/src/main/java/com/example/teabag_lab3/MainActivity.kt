@@ -55,7 +55,10 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppScreen(modifier: Modifier = Modifier) {
     var sum by remember { mutableStateOf("") }
-    Column(Modifier.padding(top = 40.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+    var foods by remember { mutableStateOf("") }
+    Column(
+        Modifier.padding(top = 40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text="Калькулятор чаевых",
             modifier = Modifier.padding(vertical = 10.dp),
@@ -64,9 +67,8 @@ fun AppScreen(modifier: Modifier = Modifier) {
         )
 
         Row(horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically) {
-            val entrymod = modifier
-                .padding(end = 20.dp)
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(vertical = 10.dp)) {
             val trailingIconView = @Composable {
                 Icon(
                     painter = painterResource(R.drawable.baseline_currency_ruble_24),
@@ -80,11 +82,33 @@ fun AppScreen(modifier: Modifier = Modifier) {
                 Modifier.padding(horizontal = 20.dp)
             )
             TextField(
-                modifier = entrymod,
+                modifier = modifier.padding(end = 20.dp),
                 value = sum,
                 onValueChange = { sum = it },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 trailingIcon = trailingIconView,
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = Color(0xFFFF69B4),
+                    unfocusedTextColor = Color.Black,
+                    focusedContainerColor = Color.White,
+                    focusedTextColor = Color.Black,
+                )
+            )
+        }
+
+        Row(horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(vertical = 10.dp)) {
+
+            Text(
+                text = "Кол-во блюд",
+                Modifier.padding(horizontal = 20.dp)
+            )
+            TextField(
+                modifier = Modifier.padding(end=20.dp),
+                value = foods,
+                onValueChange = { foods = it },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color(0xFFFF69B4),
                     unfocusedTextColor = Color.Black,
