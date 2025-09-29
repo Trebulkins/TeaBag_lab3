@@ -4,20 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
@@ -31,7 +27,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -39,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import com.example.teabag_lab3.ui.theme.TeaBag_lab3Theme
+import kotlin.math.round
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,18 +57,17 @@ fun AppScreen(modifier: Modifier = Modifier) {
     var tea by remember { mutableStateOf(0f) }
     
     Column(
-        Modifier.padding(top = 40.dp),
+        Modifier.padding(top = 30.dp),
         horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text="Калькулятор чаевых",
-            modifier = Modifier.padding(vertical = 10.dp),
+            modifier = Modifier.padding(vertical = 12.dp),
             fontSize = 6.em,
             fontWeight = FontWeight.Bold
         )
 
         Row(horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(vertical = 10.dp)) {
+            verticalAlignment = Alignment.CenterVertically) {
             val trailingIconView = @Composable {
                 Icon(
                     painter = painterResource(R.drawable.baseline_currency_ruble_24),
@@ -101,8 +96,7 @@ fun AppScreen(modifier: Modifier = Modifier) {
         }
 
         Row(horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(vertical = 10.dp)) {
+            verticalAlignment = Alignment.CenterVertically) {
 
             Text(
                 text = "Кол-во блюд",
@@ -122,16 +116,20 @@ fun AppScreen(modifier: Modifier = Modifier) {
             )
         }
 
+        Spacer(Modifier.height(20.dp))
         Text(text = "Чаевые")
+        Text(text = "${round(tea)}%")
         Slider(
             value = tea,
             onValueChange = { tea = it },
-            steps = 25,
+            steps = 24,
             valueRange = 0f .. 25f,
             modifier = Modifier.padding(horizontal = 22.dp)
         )
         Row(horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.width(360.dp).padding(vertical = 10.dp)){
+            modifier = Modifier
+                .width(360.dp)
+                .padding(vertical = 10.dp)){
             Text(text = "0")
             Text(text = "25")
         }
