@@ -1,6 +1,8 @@
 package com.example.teabag_lab3
 
+import android.content.Context
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -32,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -49,7 +52,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             TeaBag_lab3Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    AppScreen(modifier = Modifier.padding(innerPadding))
+                    AppScreen(modifier = Modifier.padding(innerPadding), LocalContext.current)
                 }
             }
         }
@@ -57,13 +60,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AppScreen(modifier: Modifier = Modifier) {
+fun AppScreen(modifier: Modifier = Modifier, context: Context) {
     var sum by remember { mutableStateOf("") }
     var foods by remember { mutableStateOf("") }
     var tea by remember { mutableFloatStateOf(0f) }
 
-    val skids = listOf(0, 3, 5, 7, 10)
-    var (skid, _) = remember { mutableIntStateOf(skids[0]) }
+    val skids = listOf(3, 5, 7, 10)
+    var (skid, _) = remember { mutableIntStateOf(0) }
 
     var overall by remember { mutableFloatStateOf(0f) }
     
@@ -122,7 +125,8 @@ fun AppScreen(modifier: Modifier = Modifier) {
                         3, 4, 5 -> 5
                         6, 7, 8, 9, 10 -> 7
                         else -> 10
-                    }
+                    };
+                    Toast.makeText(context, "$foods, $skid", Toast.LENGTH_SHORT).show();
                     if (foods != "" && sum != "") overall = sum.toFloat() * (1 + tea / 100) * (1 - skid / 100)
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -167,13 +171,5 @@ fun AppScreen(modifier: Modifier = Modifier) {
         Text(
             modifier = Modifier.padding(top = 30.dp),
             text = "Итого: ${overall} руб.")
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TeaBag_lab3Theme {
-        AppScreen()
     }
 }
