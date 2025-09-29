@@ -31,9 +31,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import com.example.teabag_lab3.ui.theme.TeaBag_lab3Theme
 
 class MainActivity : ComponentActivity() {
@@ -53,8 +55,14 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppScreen(modifier: Modifier = Modifier) {
     var sum by remember { mutableStateOf("") }
-    Column {
-        Text(text="Калькулятор чаевых")
+    Column(Modifier.padding(top = 40.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text="Калькулятор чаевых",
+            modifier = Modifier.padding(vertical = 10.dp),
+            fontSize = 6.em,
+            fontWeight = FontWeight.Bold
+        )
+
         Row(horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically) {
             val entrymod = modifier
@@ -67,7 +75,10 @@ fun AppScreen(modifier: Modifier = Modifier) {
                 )
             }
 
-            Text(text = "Сумма заказа", Modifier.padding(horizontal = 20.dp))
+            Text(
+                text = "Сумма заказа",
+                Modifier.padding(horizontal = 20.dp)
+            )
             TextField(
                 modifier = entrymod,
                 value = sum,
