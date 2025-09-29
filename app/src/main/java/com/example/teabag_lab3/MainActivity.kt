@@ -66,7 +66,13 @@ fun AppScreen(modifier: Modifier = Modifier, context: Context) {
     var tea by remember { mutableFloatStateOf(0f) }
 
     val skids = listOf(3, 5, 7, 10)
-    var (skid, _) = remember { mutableIntStateOf(0) }
+    var skid = remember { mutableIntStateOf(0) }
+    val isskid = listOf(
+        remember { mutableStateOf("False")},
+        remember { mutableStateOf("False")},
+        remember { mutableStateOf("False")},
+        remember { mutableStateOf("False")}
+    )
 
     var overall by remember { mutableFloatStateOf(0f) }
     
@@ -97,7 +103,7 @@ fun AppScreen(modifier: Modifier = Modifier, context: Context) {
             TextField(
                 modifier = modifier.padding(end = 20.dp),
                 value = sum,
-                onValueChange = { sum = it; if (sum != "") overall = sum.toFloat() * (1 + tea / 100) * (1 - skid / 100) },
+                onValueChange = { sum = it; if (sum != "") overall = sum.toFloat() * (1 + tea / 100) * (1 - skid.intValue.toFloat() / 100) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 trailingIcon = trailingIconView,
                 colors = TextFieldDefaults.colors(
@@ -120,14 +126,27 @@ fun AppScreen(modifier: Modifier = Modifier, context: Context) {
                 modifier = Modifier.padding(end=20.dp),
                 value = foods,
                 onValueChange = { foods = it;
-                    if (foods != "") skid = when (foods.toInt()) {
-                        1, 2 -> 3
-                        3, 4, 5 -> 5
-                        6, 7, 8, 9, 10 -> 7
-                        else -> 10
+                    for (i in 0 .. 3) {isskid[i].value = "False"}
+                    if (foods != "") {
+                        if (foods.toInt() < 3) {
+                            skid = mutableIntStateOf(3)
+                            isskid[0].value = "True"
+                        } else if (2 < foods.toInt() && foods.toInt() < 6) {
+                            skid = mutableIntStateOf(5)
+                            isskid[1].value = "True"
+                        } else if (5 < foods.toInt() && foods.toInt() < 11) {
+                            skid = mutableIntStateOf(7)
+                            isskid[2].value = "True"
+                        } else if (10 < foods.toInt()) {
+                            skid = mutableIntStateOf(10)
+                            isskid[3].value = "True"
+                        } else {
+                            skid = mutableIntStateOf(0)
+                        }
+
                     };
-                    Toast.makeText(context, "$foods, $skid", Toast.LENGTH_SHORT).show();
-                    if (foods != "" && sum != "") overall = sum.toFloat() * (1 + tea / 100) * (1 - skid / 100)
+                    Toast.makeText(context, "$foods, ${skid.intValue}", Toast.LENGTH_SHORT).show();
+                    if (foods != "" && sum != "") overall = sum.toFloat() * (1 + tea / 100) * (1 - skid.intValue.toFloat() / 100)
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 colors = TextFieldDefaults.colors(
@@ -143,7 +162,7 @@ fun AppScreen(modifier: Modifier = Modifier, context: Context) {
         Text(text = "${round(tea)}%")
         Slider(
             value = tea,
-            onValueChange = { tea = it; if (sum != "") overall = sum.toFloat() * (1 + tea / 100) * (1 - skid / 100) },
+            onValueChange = { tea = it; if (sum != "") overall = sum.toFloat() * (1 + tea / 100) * (1 - skid.intValue.toFloat() / 100) },
             steps = 24,
             valueRange = 0f .. 25f,
             modifier = Modifier.padding(horizontal = 22.dp)
@@ -159,9 +178,9 @@ fun AppScreen(modifier: Modifier = Modifier, context: Context) {
         Row(modifier = Modifier.padding(top = 30.dp).fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly) {
             Text(text = "Скидка")
-            skids.forEach { text ->
+            skids.forEachIndexed { i, text ->
                 RadioButton(
-                    selected = (text == skid),
+                    selected = isskid[i].value == "True",
                     onClick = null
                 )
                 Text(text = "$text%")
@@ -170,6 +189,6 @@ fun AppScreen(modifier: Modifier = Modifier, context: Context) {
 
         Text(
             modifier = Modifier.padding(top = 30.dp),
-            text = "Итого: ${overall} руб.")
+            text = "Итого: ${round(overall)} руб.")
     }
 }
