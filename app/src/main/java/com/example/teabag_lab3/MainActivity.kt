@@ -5,15 +5,18 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
@@ -21,6 +24,8 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -33,6 +38,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 import com.example.teabag_lab3.ui.theme.TeaBag_lab3Theme
 import kotlin.math.round
 
@@ -54,7 +60,12 @@ class MainActivity : ComponentActivity() {
 fun AppScreen(modifier: Modifier = Modifier) {
     var sum by remember { mutableStateOf("") }
     var foods by remember { mutableStateOf("") }
-    var tea by remember { mutableStateOf(0f) }
+    var tea by remember { mutableFloatStateOf(0f) }
+
+    val skids = listOf(0, 3, 5, 7, 10)
+    var (skid, _) = remember { mutableIntStateOf(skids[0]) }
+
+    var overall by remember { mutableFloatStateOf(0f) }
     
     Column(
         Modifier.padding(top = 30.dp),
@@ -83,7 +94,7 @@ fun AppScreen(modifier: Modifier = Modifier) {
             TextField(
                 modifier = modifier.padding(end = 20.dp),
                 value = sum,
-                onValueChange = { sum = it },
+                onValueChange = { sum = it; if (sum != "") overall = sum.toFloat() * (1 + tea / 100) * (1 - skid / 100) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 trailingIcon = trailingIconView,
                 colors = TextFieldDefaults.colors(
@@ -105,7 +116,15 @@ fun AppScreen(modifier: Modifier = Modifier) {
             TextField(
                 modifier = Modifier.padding(end=20.dp),
                 value = foods,
-                onValueChange = { foods = it },
+                onValueChange = { foods = it;
+                    if (foods != "") skid = when (foods.toInt()) {
+                        1, 2 -> 3
+                        3, 4, 5 -> 5
+                        6, 7, 8, 9, 10 -> 7
+                        else -> 10
+                    }
+                    if (foods != "" && sum != "") overall = sum.toFloat() * (1 + tea / 100) * (1 - skid / 100)
+                },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color(0xFFFF69B4),
@@ -116,12 +135,11 @@ fun AppScreen(modifier: Modifier = Modifier) {
             )
         }
 
-        Spacer(Modifier.height(20.dp))
-        Text(text = "Чаевые")
+        Text(text = "Чаевые", modifier = Modifier.padding(top = 30.dp))
         Text(text = "${round(tea)}%")
         Slider(
             value = tea,
-            onValueChange = { tea = it },
+            onValueChange = { tea = it; if (sum != "") overall = sum.toFloat() * (1 + tea / 100) * (1 - skid / 100) },
             steps = 24,
             valueRange = 0f .. 25f,
             modifier = Modifier.padding(horizontal = 22.dp)
@@ -133,6 +151,22 @@ fun AppScreen(modifier: Modifier = Modifier) {
             Text(text = "0")
             Text(text = "25")
         }
+
+        Row(modifier = Modifier.padding(top = 30.dp).fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly) {
+            Text(text = "Скидка")
+            skids.forEach { text ->
+                RadioButton(
+                    selected = (text == skid),
+                    onClick = null
+                )
+                Text(text = "$text%")
+            }
+        }
+
+        Text(
+            modifier = Modifier.padding(top = 30.dp),
+            text = "Итого: ${overall} руб.")
     }
 }
 
